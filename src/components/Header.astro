@@ -1,0 +1,84 @@
+---
+const nav = [
+  { href: '/', label: '首页' },
+  { href: '/about', label: '关于' },
+  { href: '/projects', label: '项目' },
+  { href: '/blog', label: '博客' },
+  { href: '/contact', label: '联系' },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo">你的名字</a>
+    <nav aria-label="主导航">
+      <ul>
+        {
+          nav.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                aria-current={pathname === href || (href !== '/' && pathname.startsWith(href))
+                  ? 'page'
+                  : undefined}
+              >
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 1rem;
+  }
+
+  .logo {
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .logo:hover {
+    text-decoration: none;
+    color: var(--accent);
+  }
+
+  nav ul {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--accent);
+    text-decoration: none;
+  }
+</style>

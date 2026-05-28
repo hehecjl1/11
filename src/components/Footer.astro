@@ -1,0 +1,23 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <p>© {year} 你的名字 · 使用 Astro + Content Collections 构建</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 4rem;
+    padding-block: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+</style>

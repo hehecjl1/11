@@ -1,0 +1,44 @@
+---
+import ContentLayout from '../../layouts/ContentLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const { title, description, pubDate, tags, link, repo } = project.data;
+---
+
+<ContentLayout {title} {description} {pubDate} {tags}>
+  {
+    (link || repo) && (
+      <p class="links">
+        {link && (
+          <a href={link} rel="noopener noreferrer" target="_blank">
+            在线演示
+          </a>
+        )}
+        {link && repo && ' · '}
+        {repo && (
+          <a href={repo} rel="noopener noreferrer" target="_blank">
+            源码仓库
+          </a>
+        )}
+      </p>
+    )
+  }
+  <Content />
+</ContentLayout>
+
+<style>
+  .links {
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+  }
+</style>

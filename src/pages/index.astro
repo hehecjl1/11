@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+const featured = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout title="首页">
+  <section class="hero">
+    <p class="eyebrow">你好，我是</p>
+    <h1>你的名字</h1>
+    <p class="lead">
+      一句话介绍你自己：例如全栈开发者，专注 Web 与内容创作。这里记录项目、文章与思考。
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="/projects">查看项目</a>
+      <a class="btn" href="/blog">阅读博客</a>
+    </div>
+  </section>
+
+  {
+    featured.length > 0 && (
+      <section class="section">
+        <div class="section-head">
+          <h2>精选项目</h2>
+          <a href="/projects">全部 →</a>
+        </div>
+        <div class="grid">
+          {featured.map((project) => (
+            <PostCard
+              title={project.data.title}
+              description={project.data.description}
+              href={`/projects/${project.id}`}
+              date={project.data.pubDate}
+              tags={project.data.tags}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    recentPosts.length > 0 && (
+      <section class="section">
+        <div class="section-head">
+          <h2>最新文章</h2>
+          <a href="/blog">全部 →</a>
+        </div>
+        <div class="grid">
+          {recentPosts.map((post) => (
+            <PostCard
+              title={post.data.title}
+              description={post.data.description}
+              href={`/blog/${post.id}`}
+              date={post.data.pubDate}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .hero {
+    max-width: 36rem;
+    margin-bottom: 3rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.25rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2.25rem, 6vw, 3rem);
+    line-height: 1.15;
+  }
+
+  .lead {
+    margin: 0 0 1.5rem;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  .btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn.primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: #fff;
+  }
+
+  .section {
+    margin-top: 2.5rem;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-head h2 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+  }
+</style>

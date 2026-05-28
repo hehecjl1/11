@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const email = 'hello@example.com';
+const links = [
+  { label: 'GitHub', href: 'https://github.com/yourname' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourname' },
+];
+---
+
+<BaseLayout title="联系" description="联系我 — 邮箱与社交链接">
+  <article class="prose">
+    <h1>联系我</h1>
+    <p>欢迎通过邮件或社交平台交流。</p>
+    <p>
+      邮箱：<a href={`mailto:${email}`}>{email}</a>
+    </p>
+    <ul>
+      {links.map(({ label, href }) => (
+        <li>
+          <a href={href} rel="noopener noreferrer" target="_blank">
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="note">
+      首版建议使用 mailto 链接；若需要表单，可后续接入 Formspree、Resend 或自建 API。
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .note {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>

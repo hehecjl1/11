@@ -1,0 +1,91 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+}
+
+const { title, description, pubDate, updatedDate, tags = [] } = Astro.props;
+
+const pub = pubDate.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="prose content-article">
+    <header class="content-header">
+      <h1>{title}</h1>
+      <p class="meta">
+        <time datetime={pubDate.toISOString()}>{pub}</time>
+        {
+          updatedDate && (
+            <>
+              {' · 更新于 '}
+              <time datetime={updatedDate.toISOString()}>
+                {updatedDate.toLocaleDateString('zh-CN')}
+              </time>
+            </>
+          )
+        }
+      </p>
+      {
+        tags.length > 0 && (
+          <ul class="tags">
+            {tags.map((tag) => (
+              <li>{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+    <slot />
+  </article>
+</BaseLayout>
+
+<style>
+  .content-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .content-header h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  .meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags li {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .content-article {
+    max-width: 42rem;
+  }
+</style>
